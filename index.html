@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width">
+<meta property="og:title" content="pagedown: Create Paged HTML Documents for Printing from R Markdown" />
+
+
+
+
+<meta name="author" content="Yihui Xie and Romain Lesur" />
+
+<meta name="date" content="2018-11-30" />
+
+<meta name="description" content="pagedown: Create Paged HTML Documents for Printing from R Markdown">
+
+<title>pagedown: Create Paged HTML Documents for Printing from R Markdown</title>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  window.PagedConfig = {
+    before: () => {
+      return new Promise((resolve, reject) => {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        var src = "true";
+        if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+        if (location.protocol !== "file:" && /^https?:/.test(src))
+          src = src.replace(/^https?:/, '');
+        script.src = src;
+        window.MathJax = {
+          AuthorInit: () => {
+            MathJax.Hub.Register.StartupHook("Begin", () => {
+              MathJax.Hub.Queue(resolve);
+            });
+          }
+        };
+        document.getElementsByTagName("head")[0].appendChild(script);
+      });
+    }
+  };
+</script>
+
+<link href="index_files/paged/css/default-fonts.css" rel="stylesheet" />
+<link href="index_files/paged/css/default-page.css" rel="stylesheet" />
+<link href="index_files/paged/css/default.css" rel="stylesheet" />
+<script src="index_files/paged/js/config.js"></script>
+<script src="index_files/paged/js/paged.js"></script>
+<script src="index_files/paged/js/hooks.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+
+</head>
+
+<body>
+
+<div class="running-h1-title"></div>
+
+<div class="running-h2-title"></div>
+
+
+<div class="front-matter">
+
+<div id="header" class="title-page">
+<h1 class="shorttitle1" style="display: none;">Printing R Markdown with CSS</h1>
+<h1 class="title">pagedown: Create Paged HTML Documents for Printing from R Markdown</h1>
+<h1 class="subtitle"><span>A Less Traveled Road to PDF and Printing</span></h1>
+<h2 class="author">Yihui Xie and Romain Lesur</h2>
+<h2 class="date">2018-11-30</h2>
+</div>
+
+<div id="TOC" class="level1 toc">
+<h1 class="toc-title">Contents</h1>
+<ul>
+<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a><ul>
+<li><a href="#css-for-print"><span class="toc-section-number">1.1</span> CSS for print</a></li>
+<li><a href="#css-frameworks"><span class="toc-section-number">1.2</span> CSS frameworks</a></li>
+</ul></li>
+<li><a href="#pagedjs"><span class="toc-section-number">2</span> Paged.js</a></li>
+<li><a href="#applications"><span class="toc-section-number">3</span> Applications</a><ul>
+<li><a href="#resume"><span class="toc-section-number">3.1</span> Resume</a></li>
+<li><a href="#poster"><span class="toc-section-number">3.2</span> Poster</a></li>
+<li><a href="#business-card"><span class="toc-section-number">3.3</span> Business card</a></li>
+<li><a href="#letter"><span class="toc-section-number">3.4</span> Letter</a></li>
+</ul></li>
+<li><a href="#supported-features"><span class="toc-section-number">4</span> Supported features</a><ul>
+<li><a href="#lists-of-tables-and-figures"><span class="toc-section-number">4.1</span> Lists of Tables and Figures</a></li>
+<li><a href="#links"><span class="toc-section-number">4.2</span> Links</a><ul>
+<li><a href="#automatic-links"><span class="toc-section-number">4.2.1</span> Automatic links</a></li>
+<li><a href="#inline-links"><span class="toc-section-number">4.2.2</span> Inline links</a></li>
+</ul></li>
+<li><a href="#footnotes"><span class="toc-section-number">4.3</span> Footnotes</a></li>
+<li><a href="#tests"><span class="toc-section-number">4.4</span> Tests</a><ul>
+<li><a href="#a-list"><span class="toc-section-number">4.4.1</span> A list</a></li>
+<li><a href="#test-mathjax"><span class="toc-section-number">4.4.2</span> Test MathJax</a></li>
+<li><a href="#miscellaneous-tests-used-during-pagedown-development"><span class="toc-section-number">4.4.3</span> Miscellaneous tests used during pagedown development</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#bibliography">Bibliography</a></li>
+</ul>
+</div>
+</div>
+
+<div class="main">
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>When talking about PDF and printing, we often think of tools like LaTeX and Microsoft Word. When talking about HTML and CSS, we may have never imagined their possible off-screen use such as printing to PDF.</p>
+<p>Can we print a book with HTML and CSS? W3C published <a href="https://www.w3.org/1999/06/WD-css3-page-19990623">the first working draft</a> on “Paged Media Properties for CSS(3)”, which was last updated in 2013. Although the working draft has been there for nearly two decades, it is still not common to see authors write or print books with HTML and CSS. The main reason is that the W3C specs are still in the draft mode, so most web browsers have not really implemented them.</p>
+<p>HTML and CSS still cannot beat other dominating tools like Word or LaTeX when it comes to typesetting content under the constraint of “pages”. However, they can be extremely powerful and flexible in other aspects, especially when combined with the power of JavaScript.</p>
+<pre class="sourceCode r"><code class="sourceCode r">remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;rstudio/pagedown&#39;</span>)</code></pre>
+<div id="css-for-print" class="section level2">
+<h2><span class="header-section-number">1.1</span> CSS for print</h2>
+</div>
+<div id="css-frameworks" class="section level2">
+<h2><span class="header-section-number">1.2</span> CSS frameworks</h2>
+</div>
+</div>
+<div id="pagedjs" class="section level1">
+<h1><span class="header-section-number">2</span> Paged.js</h1>
+<p>To create a paged HTML document, you can use the output format <code>pagedown::html_paged</code>.</p>
+</div>
+<div id="applications" class="section level1">
+<h1><span class="header-section-number">3</span> Applications</h1>
+<p>You can print the following (HTML) applications to PDF using Google Chrome (remember to set margins to none, and allow background graphics to be printed). There are a few templates in the <strong>pagedown</strong> package, which you can access from RStudio’s menu <code>File -&gt; New File -&gt; R Markdown -&gt; From Template</code>.</p>
+<div id="resume" class="section level2">
+<h2><span class="header-section-number">3.1</span> Resume</h2>
+<p>Currently <strong>pagedown</strong> has one resume format: <code>pagedown::html_resume</code>. See <a href="https://pagedown.rbind.io/html-resume/" class="uri">https://pagedown.rbind.io/html-resume/</a> for an example. Note that when you print the resume to PDF in Google Chrome, you may want to remove the headers and footers (click “More Settings” and uncheck “Headers and footers”).</p>
+</div>
+<div id="poster" class="section level2">
+<h2><span class="header-section-number">3.2</span> Poster</h2>
+<p>You can create a poster with the <code>pagedown::poster_relaxed</code> format. See <a href="https://pagedown.rbind.io/poster-relaxed/" class="uri">https://pagedown.rbind.io/poster-relaxed/</a> for an example.</p>
+</div>
+<div id="business-card" class="section level2">
+<h2><span class="header-section-number">3.3</span> Business card</h2>
+<p>To create a simple business card, you can use the <code>pagedown::business_card</code> format. See <a href="https://pagedown.rbind.io/business-card/" class="uri">https://pagedown.rbind.io/business-card/</a> for an example.</p>
+</div>
+<div id="letter" class="section level2">
+<h2><span class="header-section-number">3.4</span> Letter</h2>
+<p>You can write a letter with the <code>pagedown::html_letter</code> format. See <a href="https://pagedown.rbind.io/html-letter/" class="uri">https://pagedown.rbind.io/html-letter/</a> for an example.</p>
+</div>
+</div>
+<div id="supported-features" class="section level1">
+<h1><span class="header-section-number">4</span> Supported features</h1>
+<div id="lists-of-tables-and-figures" class="section level2">
+<h2><span class="header-section-number">4.1</span> Lists of Tables and Figures</h2>
+<p>Lists of tables and/or figures can be inserted in the document using the <code>lot</code> and <code>lof</code> variables.<br />
+You also can customize their titles with the <code>lot-title</code> and <code>lof-title</code> variables in the YAML header, for instance:</p>
+<pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="ot">---</span>
+<span class="fu">title:</span><span class="at"> </span><span class="st">&quot;A document with lists of tables and figures&quot;</span>
+<span class="fu">output:</span><span class="at"> pagedown::html_paged</span>
+<span class="fu">toc-title:</span><span class="at"> Contents</span>
+<span class="fu">bibliography:</span><span class="at"> index.bib</span>
+<span class="fu">lot:</span><span class="at"> true</span>
+<span class="fu">lot-title:</span><span class="at"> </span><span class="st">&quot;Tables&quot;</span>
+<span class="fu">lof:</span><span class="at"> true</span>
+<span class="fu">lof-title:</span><span class="at"> </span><span class="st">&quot;Figures&quot;</span>
+<span class="ot">---</span></code></pre>
+</div>
+<div id="links" class="section level2">
+<h2><span class="header-section-number">4.2</span> Links</h2>
+<p>In markdown, the usual ways to insert links are <em>automatic</em> and <em>inline</em> links.</p>
+<div id="automatic-links" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Automatic links</h3>
+<p><em>Automatic links</em> are created using pointy brackets, e.g. <code>&lt;https://bookdown.org/&gt;</code>.<br />
+The full URL is then inserted in the final document <a href="https://bookdown.org/" class="uri">https://bookdown.org/</a>.<br />
+This is convenient for a short and meaningful URL.</p>
+</div>
+<div id="inline-links" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Inline links</h3>
+<p><em>Inline links</em> are useful when you do not want to show the full URL but an alternative text (because most of the URLs are ugly). In markdown, the link text is inserted in square brackets and the URL in parentheses, e.g. <code>[bookdown website](https://bookdown.org/)</code>. On a website, the URL is hidden and replaced by the link text: <a href="">bookdown website</a>. The user can interactively access to the URL by clicking on the link.</p>
+<p>When printing a document, we lose interactivity. So, we need to show the hidden URLs. By default, the <code>html_paged</code> format adds the URLs after the link text in parentheses, for instance <code>[bookdown website](https://bookdown.org/)</code> is rendered as <a href="https://bookdown.org/">bookdown website</a>.</p>
+<p>You also can use the <code>links-to-footnotes</code> top-level YAML parameter: it transforms all the URLs as footnotes. You will get the same result as <code>bookdown website^[https://bookdown.org/]</code>.<br />
+To activate the <code>links-to-footnotes</code> option, insert <code>links-to-footnotes: true</code> in the YAML header. For instance:</p>
+<pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="ot">---</span>
+<span class="fu">title:</span><span class="at"> </span><span class="st">&quot;A paged HTML document&quot;</span>
+<span class="fu">output:</span><span class="at"> pagedown::html_paged</span>
+<span class="fu">toc-title:</span><span class="at"> Contents</span>
+<span class="fu">bibliography:</span><span class="at"> index.bib</span>
+<span class="fu">links-to-footnotes:</span><span class="at"> true</span>
+<span class="ot">---</span></code></pre>
+</div>
+</div>
+<div id="footnotes" class="section level2">
+<h2><span class="header-section-number">4.3</span> Footnotes</h2>
+<p>The default behavior of pagedown is to render notes as endnotes because Paged.js does not natively support footnotes for now. However, we introduced an experimental support for footnotes. You can test it including <code>paged-footnotes: true</code> in the YAML header of your document. If you get any trouble with this experimental feature, please open an issue on GitHub.</p>
+</div>
+<div id="tests" class="section level2" data-short-title="Some tests">
+<h2><span class="header-section-number">4.4</span> Tests</h2>
+<div id="a-list" class="section level3" data-short-title="An ordered list">
+<h3><span class="header-section-number">4.4.1</span> A list</h3>
+<ol style="list-style-type: decimal">
+<li><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rhoncus dolor in risus tempor iaculis. Vivamus id euismod leo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin pretium turpis eget orci iaculis, et euismod arcu commodo. Nulla maximus turpis elit, volutpat volutpat mauris fringilla non. Aenean rutrum vitae tortor egestas viverra. Sed malesuada lectus ac efficitur posuere. Nullam euismod odio dolor, id porttitor nulla sodales at. Nunc hendrerit dictum pulvinar. Nunc consequat ante ac urna posuere tincidunt. In ornare ligula ac aliquet tempor. Nunc eros nunc, vehicula vel efficitur quis, mattis ac massa.</p></li>
+<li><p>Etiam mollis nunc ex, ut molestie nisl convallis id. Sed et tellus lacus. Suspendisse ultricies nibh ut malesuada commodo. Mauris venenatis odio at quam interdum semper. Nulla semper, mi sed laoreet efficitur, nulla ipsum elementum ex, in blandit orci massa non lectus. Nullam ac rutrum mauris, ut aliquet orci. Nulla porttitor sit amet erat in lobortis. Praesent cursus sagittis urna eget vestibulum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></li>
+<li><p>Quisque a vulputate metus. Vestibulum id odio sed sem rhoncus rutrum ut egestas arcu. Donec tempor purus gravida nibh ultrices euismod. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nunc facilisis luctus tortor, sed maximus arcu condimentum ut. Aliquam erat volutpat. Pellentesque maximus leo erat, at sagittis magna rutrum ac. Mauris pulvinar purus vitae dapibus mollis. Aenean euismod, erat quis tempus elementum, lorem sem tristique justo, sed commodo enim augue at dolor. Etiam lacus nunc, mollis non dui non, vulputate elementum lacus. Aenean ac sem a mi facilisis sollicitudin. Phasellus congue nec massa et laoreet. Quisque dapibus velit nibh, id mattis augue convallis eget. Pellentesque sagittis, neque id maximus hendrerit, eros arcu scelerisque quam, non vestibulum magna dui eget sapien. Etiam rhoncus mattis tortor at tincidunt. Nam interdum, ante et malesuada vestibulum, leo sapien blandit risus, nec sodales dolor lorem eget ex.</p></li>
+<li><p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse et imperdiet turpis. Sed nulla massa, lobortis dictum imperdiet et, euismod nec urna. Fusce in nunc sit amet velit tincidunt sodales vitae in augue. Fusce et justo quis arcu ultrices maximus vitae ac massa. Praesent eleifend aliquet aliquam. Ut arcu libero, vehicula et elementum ut, lobortis eu lacus. Duis mollis nisi ut eros tristique, a pharetra neque iaculis. Integer a lorem volutpat, interdum massa ac, viverra tortor.</p></li>
+<li><p>Etiam cursus mauris mi, in pellentesque nulla imperdiet non. Nullam ut condimentum leo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer tempor enim maximus enim tincidunt, id maximus nulla malesuada. Praesent sed lectus dapibus, laoreet dui eu, ultricies ex. Proin dignissim tellus dolor, ac vulputate metus porta a. Proin in libero ut ligula varius scelerisque nec eget sem. Duis ullamcorper risus massa, quis euismod enim sagittis nec. Phasellus justo magna, mollis ac erat vitae, porta pharetra massa. In ornare posuere ipsum at posuere. Sed metus lacus, rutrum sed laoreet ut, porta vitae augue. Suspendisse vel odio nunc. Nulla et tellus in justo aliquet efficitur. Aliquam erat volutpat.</p></li>
+<li><p>Cras ipsum metus, mollis eu ultrices ut, lobortis nec nisl. Donec egestas mollis faucibus. Vestibulum lobortis dictum arcu a egestas. Nunc posuere molestie ante, iaculis ultrices urna porttitor et. Nullam nec ligula non purus tincidunt sollicitudin. Fusce eu cursus erat. Sed dapibus, urna et auctor dignissim, magna dui pulvinar quam, vel mattis felis justo at eros. Integer commodo vitae arcu sed dignissim. In porttitor nibh sapien, eget dignissim nulla malesuada et. Vestibulum non justo eros. Duis venenatis tortor tincidunt tortor pretium molestie. Donec efficitur mattis porta.</p></li>
+</ol>
+</div>
+<div id="test-mathjax" class="section level3">
+<h3><span class="header-section-number">4.4.2</span> Test MathJax</h3>
+<p>The following test comes from <a href="http://www.cs.toronto.edu/~yujiali/test/mathjax.html" class="uri">http://www.cs.toronto.edu/~yujiali/test/mathjax.html</a>.</p>
+<p>How about some RBM stuff first:</p>
+<p><span class="math display">\[
+  E(\mathbf{v}, \mathbf{h}) = -\sum_{i,j}w_{ij}v_i h_j - \sum_i b_i v_i - \sum_j c_j h_j
+\]</span></p>
+<p>It works! Multiline equations?</p>
+<p><span class="math display">\[
+  \begin{align}
+    p(v_i=1|\mathbf{h}) &amp; = \sigma\left(\sum_j w_{ij}h_j + b_i\right) \\
+    p(h_j=1|\mathbf{v}) &amp; = \sigma\left(\sum_i w_{ij}v_i + c_j\right)
+  \end{align}
+\]</span>
+It also works. Inline equations? Here is an example: <span class="math inline">\(p(x|y) = \frac{p(y|x)p(x)}{p(y)}\)</span>. It still works perfectly well.</p>
+</div>
+<div id="miscellaneous-tests-used-during-pagedown-development" class="section level3">
+<h3><span class="header-section-number">4.4.3</span> Miscellaneous tests used during pagedown development</h3>
+<p>Test cross-references of pages: <a href="#pagedjs">Paged.js</a>.</p>
+<p>A footnote.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>R code chunks:</p>
+<pre class="sourceCode r"><code class="sourceCode r">isFALSE =<span class="st"> </span><span class="cf">function</span>(x) {
+  <span class="kw">identical</span>(x, <span class="ot">FALSE</span>)
+}
+<span class="kw">isFALSE</span>(F)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>R plots (Figure <a href="#fig:test-plot">4.1</a>):</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">.5</span>, <span class="fl">.1</span>))
+<span class="kw">plot</span>(cars, <span class="dt">pch =</span> <span class="dv">19</span>)</code></pre>
+<div class="figure"><span id="fig:test-plot"></span>
+<img src="index_files/figure-html/test-plot-1.png" alt="Test a plot." width="480" />
+<p class="caption">
+Figure 4.1: Test a plot.
+</p>
+</div>
+<p>Tables (Table <a href="#tab:test-table">4.1</a>):</p>
+<pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">head</span>(iris[, <span class="dv">-5</span>]), <span class="dt">caption =</span> <span class="st">&#39;Test a table.&#39;</span>)</code></pre>
+<table>
+<caption><span id="tab:test-table">Table 4.1: </span>Test a table.</caption>
+<thead>
+<tr class="header">
+<th align="right">Sepal.Length</th>
+<th align="right">Sepal.Width</th>
+<th align="right">Petal.Length</th>
+<th align="right">Petal.Width</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">5.1</td>
+<td align="right">3.5</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="even">
+<td align="right">4.9</td>
+<td align="right">3.0</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="odd">
+<td align="right">4.7</td>
+<td align="right">3.2</td>
+<td align="right">1.3</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="even">
+<td align="right">4.6</td>
+<td align="right">3.1</td>
+<td align="right">1.5</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="odd">
+<td align="right">5.0</td>
+<td align="right">3.6</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="even">
+<td align="right">5.4</td>
+<td align="right">3.9</td>
+<td align="right">1.7</td>
+<td align="right">0.4</td>
+</tr>
+</tbody>
+</table>
+<p>Cite <span class="citation">R Core Team (2017)</span> and <span class="citation">Xie and Lesur (2018)</span>.</p>
+</div>
+</div>
+</div>
+<div id="bibliography" class="section level1 unnumbered">
+<h1>Bibliography</h1>
+<div id="refs" class="references">
+<div id="ref-R-base">
+<p>R Core Team. 2017. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.</p>
+</div>
+<div id="ref-R-pagedown">
+<p>Xie, Yihui, and Romain Lesur. 2018. <em>Pagedown: Paginate the Html Output of R Markdown with Css for Print</em>. <a href="https://github.com/rstudio/pagedown">https://github.com/rstudio/pagedown</a>.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>This is a footnote.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+</div>
+
+
+
+
+</body>
+</html>
